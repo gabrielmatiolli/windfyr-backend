@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Windfyr.Http.OpenWeather;
 using Windfyr.Repository.Context;
 using Windfyr.WebApi.Auth;
 using Windfyr.WebApi.Crop;
@@ -36,9 +37,26 @@ if (string.IsNullOrWhiteSpace(connectionString))
 var authSettings = AuthSettings.FromConfiguration(builder.Configuration);
 authSettings.Validate();
 
+var openWeatherSettings = new OpenWeatherSettings
+{
+    ApiKey = builder.Configuration["OPENWEATHER:APIKEY"]
+        ?? Environment.GetEnvironmentVariable("OPENWEATHER__APIKEY")
+        ?? string.Empty,
+    BaseUrl = builder.Configuration["OPENWEATHER:BASEURL"]
+        ?? Environment.GetEnvironmentVariable("OPENWEATHER__BASEURL")
+        ?? "https://api.openweathermap.org"
+};
+openWeatherSettings.Validate();
+
 builder.Services.AddDbContext<WindfyrDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 builder.Services.AddSingleton(authSettings);
+builder.Services.AddSingleton(openWeatherSettings);
+builder.Services.AddHttpClient<IOpenWeatherClient, OpenWeatherClient>((sp, client) =>
+{
+    var settings = sp.GetRequiredService<OpenWeatherSettings>();
+    client.BaseAddress = new Uri(settings.BaseUrl);
+});
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

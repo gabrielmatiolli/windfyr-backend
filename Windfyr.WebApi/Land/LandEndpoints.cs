@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Windfyr.Http.OpenWeather;
 using Windfyr.Repository.Context;
 
 namespace Windfyr.WebApi.Land;
@@ -17,19 +18,23 @@ public static class LandEndpoints
             .WithName("GetLands")
             .WithSummary("Lista terrenos do usuario logado");
 
-        group.MapGet("/{id:ulong}", GetLandByIdAsync)
+        group.MapGet("/{id}", GetLandByIdAsync)
             .WithName("GetLandById")
             .WithSummary("Detalha um terreno do usuario logado");
+
+        group.MapGet("/{id}/forecast", GetLandForecastAsync)
+            .WithName("GetLandForecast")
+            .WithSummary("Busca previsao atual no OpenWeatherMap para um terreno do usuario logado");
 
         group.MapPost(string.Empty, CreateLandAsync)
             .WithName("CreateLand")
             .WithSummary("Cria terreno para usuario logado");
 
-        group.MapPut("/{id:ulong}", UpdateLandAsync)
+        group.MapPut("/{id}", UpdateLandAsync)
             .WithName("UpdateLand")
             .WithSummary("Atualiza terreno do usuario logado");
 
-        group.MapDelete("/{id:ulong}", DeleteLandAsync)
+        group.MapDelete("/{id}", DeleteLandAsync)
             .WithName("DeleteLand")
             .WithSummary("Remove terreno do usuario logado");
 
@@ -159,6 +164,64 @@ public static class LandEndpoints
             .FirstAsync(ct);
 
         return Results.Created($"/api/lands/{land.Id}", created);
+    }
+
+    private static async Task<IResult> GetLandForecastAsync(
+        ulong id,
+        ClaimsPrincipal principal,
+        WindfyrDbContext dbContext,
+        IOpenWeatherClient openWeatherClient,
+        CancellationToken ct)
+    {
+        if (!TryGetUserId(principal, out var userId))
+        {
+            return Results.Unauthorized();
+        }
+
+        var land = await dbContext.Lands
+            .AsNoTracking()
+            .Where(l => l.Id == id && l.UserId == userId)
+            .Select(l => new
+            {
+                l.Id,
+                l.Name,
+                l.Latitude,
+                l.Longitude
+            })
+            .FirstOrDefaultAsync(ct);
+
+        if (land is null)
+        {
+            return Results.NotFound();
+        }
+
+        try
+        {
+            var weather = await openWeatherClient.GetCurrentWeatherAsync(land.Latitude, land.Longitude, ct);
+
+            var response = new LandForecastResponse(
+                LandId: land.Id,
+                LandName: land.Name,
+                Latitude: land.Latitude,
+                Longitude: land.Longitude,
+                Forecast: new LandForecastDataResponse(
+                    TemperatureCelsius: weather.TemperatureCelsius,
+                    PressureHpa: weather.PressureHpa,
+                    HumidityPercent: weather.HumidityPercent,
+                    Description: weather.Description,
+                    Icon: weather.Icon,
+                    DataTimeUtc: weather.DataTimeUtc,
+                    CityName: weather.CityName));
+
+            return Results.Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(
+                title: "Falha ao consultar previsao externa",
+                detail: ex.Message,
+                statusCode: StatusCodes.Status502BadGateway);
+        }
     }
 
     private static async Task<IResult> UpdateLandAsync(

@@ -29,3 +29,19 @@ public sealed record CreateLandRequest(
 public sealed record UpdateLandRequest(
     string? Name,
     decimal? Hectares);
+
+public sealed record LandForecastDataResponse(
+    decimal TemperatureCelsius,
+    decimal PressureHpa,
+    decimal HumidityPercent,
+    string Description,
+    string Icon,
+    DateTimeOffset DataTimeUtc,
+    string CityName);
+
+public sealed record LandForecastResponse(
+    ulong LandId,
+    string LandName,
+    decimal Latitude,
+    decimal Longitude,
+    LandForecastDataResponse Forecast);
