@@ -4,7 +4,8 @@
       "commandName": "Project"
     },
     "Windfyr.WebApi": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "launchUrl": "swagger"
     }
   }
 }

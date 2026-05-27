@@ -1,21 +1,165 @@
 [
   {
-    "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_3",
-    "RelativePath": "api/fires",
-    "HttpMethod": "GET",
-    "IsController": false,
+    "ContainingType": "Windfyr.WebApi.Controllers.AuthController",
+    "Method": "LoginAsync",
+    "RelativePath": "api/auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
     "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
+    "Parameters": [
       {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 200
+        "Name": "request",
+        "Type": "Windfyr.WebApi.Contracts.Auth.LoginRequest",
+        "IsRequired": true
       }
     ],
-    "EndpointName": "GetActiveFires",
-    "Description": "Retorna uma lista de focos de inc\u00EAndio detectados nas \u00FAltimas horas, classificados por risco.",
-    "Summary": "Obt\u00E9m os focos de inc\u00EAndio ativos"
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Windfyr.WebApi.Controllers.AuthController",
+    "Method": "RegisterAsync",
+    "RelativePath": "api/auth/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Windfyr.WebApi.Contracts.Auth.RegisterRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Windfyr.WebApi.Controllers.CropController",
+    "Method": "GetCropsAsync",
+    "RelativePath": "api/crops",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Windfyr.WebApi.Controllers.LandController",
+    "Method": "GetLandsAsync",
+    "RelativePath": "api/lands",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Windfyr.WebApi.Controllers.LandController",
+    "Method": "CreateLandAsync",
+    "RelativePath": "api/lands",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Windfyr.WebApi.Contracts.Land.CreateLandRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Windfyr.WebApi.Controllers.LandController",
+    "Method": "GetLandByIdAsync",
+    "RelativePath": "api/lands/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.UInt64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Windfyr.WebApi.Controllers.LandController",
+    "Method": "UpdateLandAsync",
+    "RelativePath": "api/lands/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.UInt64",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "Windfyr.WebApi.Contracts.Land.UpdateLandRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Windfyr.WebApi.Controllers.LandController",
+    "Method": "DeleteLandAsync",
+    "RelativePath": "api/lands/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.UInt64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Windfyr.WebApi.Controllers.LandController",
+    "Method": "GetLandForecastAsync",
+    "RelativePath": "api/lands/{id}/forecast",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.UInt64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Windfyr.WebApi.Controllers.UserController",
+    "Method": "GetProfileAsync",
+    "RelativePath": "api/users/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Windfyr.WebApi.Controllers.UserController",
+    "Method": "UpdateProfileAsync",
+    "RelativePath": "api/users/me",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Windfyr.WebApi.Contracts.User.UpdateCurrentUserRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]
