@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Windfyr.Repository")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+be35a6c7ab3bd29cbb59c41e6de0790cfe09cab3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+48ca066bedafb7a44986977d58ebee465fd1dd99")]
 [assembly: System.Reflection.AssemblyProductAttribute("Windfyr.Repository")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Windfyr.Repository")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

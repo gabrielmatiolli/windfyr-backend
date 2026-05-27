@@ -1,6 +1,8 @@
 <Solution>
+  <Project Path="Windfyr.Domain.Tests/Windfyr.Domain.Tests.csproj" />
   <Project Path="Windfyr.Domain/Windfyr.Domain.csproj" />
   <Project Path="Windfyr.Http/Windfyr.Http.csproj" />
   <Project Path="Windfyr.Repository/Windfyr.Repository.csproj" />
+  <Project Path="Windfyr.WebApi.Tests/Windfyr.WebApi.Tests.csproj" />
   <Project Path="Windfyr.WebApi/Windfyr.WebApi.csproj" />
 </Solution>

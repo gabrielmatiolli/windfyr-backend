@@ -31,7 +31,7 @@ public sealed class LandController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("{id:ulong}")]
+    [HttpGet("{id:long}")]
     public async Task<IActionResult> GetLandByIdAsync(
         [FromRoute] ulong id,
         [FromServices] IGetLandUseCase useCase,
@@ -53,7 +53,7 @@ public sealed class LandController : ControllerBase
         }
     }
 
-    [HttpGet("{id:ulong}/forecast")]
+    [HttpGet("{id:long}/forecast")]
     public async Task<IActionResult> GetLandForecastAsync(
         [FromRoute] ulong id,
         [FromServices] IGetLandForecastUseCase useCase,
@@ -118,7 +118,7 @@ public sealed class LandController : ControllerBase
         }
     }
 
-    [HttpPut("{id:ulong}")]
+    [HttpPut("{id:long}")]
     public async Task<IActionResult> UpdateLandAsync(
         [FromRoute] ulong id,
         [FromBody] UpdateLandRequest request,
@@ -148,7 +148,7 @@ public sealed class LandController : ControllerBase
         }
     }
 
-    [HttpDelete("{id:ulong}")]
+    [HttpDelete("{id:long}")]
     public async Task<IActionResult> DeleteLandAsync(
         [FromRoute] ulong id,
         [FromServices] IDeleteLandUseCase useCase,

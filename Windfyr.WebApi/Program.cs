@@ -22,16 +22,22 @@ using Windfyr.Repository.Context;
 using Windfyr.Repository.Repositories;
 using Windfyr.WebApi.Auth;
 
+var builder = WebApplication.CreateBuilder(args);
+var isTesting = builder.Environment.IsEnvironment("Testing");
+
 var envFilePath = FindEnvFile();
 if (envFilePath is null)
 {
-    throw new InvalidOperationException(
-        "Arquivo .env nao encontrado. Crie um .env no projeto (ou em um diretorio pai) com a chave ConnectionStrings__DefaultConnection.");
+    if (!isTesting)
+    {
+        throw new InvalidOperationException(
+            "Arquivo .env nao encontrado. Crie um .env no projeto (ou em um diretorio pai) com a chave ConnectionStrings__DefaultConnection.");
+    }
 }
-
-LoadDotEnv(envFilePath);
-
-var builder = WebApplication.CreateBuilder(args);
+else
+{
+    LoadDotEnv(envFilePath);
+}
 
 // ==========================================
 // 1. Configuração de Serviços (DI Container)
@@ -43,11 +49,28 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 if (string.IsNullOrWhiteSpace(connectionString))
 {
-    throw new InvalidOperationException(
-        "Connection string nao configurada. Defina ConnectionStrings__DefaultConnection no arquivo .env.");
+    if (isTesting)
+    {
+        connectionString = "Server=localhost;Database=windfyr;User=root;Password=pass;";
+    }
+    else
+    {
+        throw new InvalidOperationException(
+            "Connection string nao configurada. Defina ConnectionStrings__DefaultConnection no arquivo .env.");
+    }
 }
 
 var authSettings = AuthSettings.FromConfiguration(builder.Configuration);
+if (isTesting && string.IsNullOrWhiteSpace(authSettings.Key))
+{
+    authSettings = new AuthSettings
+    {
+        Key = new string('x', 32),
+        Issuer = authSettings.Issuer,
+        Audience = authSettings.Audience,
+        ExpiresInMinutes = authSettings.ExpiresInMinutes
+    };
+}
 authSettings.Validate();
 
 var openWeatherSettings = new OpenWeatherSettings
@@ -59,10 +82,26 @@ var openWeatherSettings = new OpenWeatherSettings
         ?? Environment.GetEnvironmentVariable("OPENWEATHER__BASEURL")
         ?? "https://api.openweathermap.org"
 };
+if (isTesting && string.IsNullOrWhiteSpace(openWeatherSettings.ApiKey))
+{
+    openWeatherSettings = new OpenWeatherSettings
+    {
+        ApiKey = "testing",
+        BaseUrl = openWeatherSettings.BaseUrl
+    };
+}
 openWeatherSettings.Validate();
 
-builder.Services.AddDbContext<WindfyrDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+if (isTesting)
+{
+    builder.Services.AddDbContext<WindfyrDbContext>(options =>
+        options.UseSqlite("DataSource=:memory:"));
+}
+else
+{
+    builder.Services.AddDbContext<WindfyrDbContext>(options =>
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+}
 builder.Services.AddSingleton(authSettings);
 builder.Services.AddSingleton(openWeatherSettings);
 builder.Services.AddHttpClient<IOpenWeatherClient, OpenWeatherClient>((sp, client) =>
@@ -116,6 +155,7 @@ builder.Services.AddScoped<IUpdateCurrentUserUseCase, UpdateCurrentUserUseCase>(
 builder.Services.AddScoped<IListCropsUseCase, ListCropsUseCase>();
 builder.Services.AddScoped<IApplyIrrigationRiskUseCase, ApplyIrrigationRiskUseCase>();
 builder.Services.AddScoped<ICaptureCurrentForecastUseCase, CaptureCurrentForecastUseCase>();
+builder.Services.AddScoped<CaptureCurrentForecastUseCase>();
 builder.Services.AddScoped<IRefreshLandForecastHistoriesUseCase, RefreshLandForecastHistoriesUseCase>();
 builder.Services.AddScoped<IListLandsUseCase, ListLandsUseCase>();
 builder.Services.AddScoped<IGetLandUseCase, GetLandUseCase>();
@@ -220,3 +260,5 @@ static void LoadDotEnv(string filePath)
         Environment.SetEnvironmentVariable(key, value);
     }
 }
+
+public partial class Program;

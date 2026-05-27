@@ -23,8 +23,8 @@ namespace Windfyr.Repository.Context
                 builder.Property(x => x.Name).HasColumnName("name").HasMaxLength(150).IsRequired();
                 builder.Property(x => x.Email).HasColumnName("email").HasMaxLength(255).IsRequired();
                 builder.Property(x => x.Password).HasColumnName("password").HasMaxLength(255).IsRequired();
-                builder.Property(x => x.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("CURRENT_TIMESTAMP").IsRequired();
-                builder.Property(x => x.UpdatedAt).HasColumnName("updated_at").HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP").ValueGeneratedOnAddOrUpdate().IsRequired();
+                builder.Property(x => x.CreatedAt).HasColumnName("created_at").IsRequired();
+                builder.Property(x => x.UpdatedAt).HasColumnName("updated_at").IsRequired();
 
                 builder.HasIndex(x => x.Email).IsUnique().HasDatabaseName("uq_users_email");
             });
@@ -36,8 +36,8 @@ namespace Windfyr.Repository.Context
 
                 builder.Property(x => x.Id).HasColumnName("id").ValueGeneratedOnAdd();
                 builder.Property(x => x.Type).HasColumnName("type").HasMaxLength(100).IsRequired();
-                builder.Property(x => x.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("CURRENT_TIMESTAMP").IsRequired();
-                builder.Property(x => x.UpdatedAt).HasColumnName("updated_at").HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP").ValueGeneratedOnAddOrUpdate().IsRequired();
+                builder.Property(x => x.CreatedAt).HasColumnName("created_at").IsRequired();
+                builder.Property(x => x.UpdatedAt).HasColumnName("updated_at").IsRequired();
             });
 
             modelBuilder.Entity<Land>(builder =>
@@ -57,8 +57,8 @@ namespace Windfyr.Repository.Context
                 builder.Property(x => x.Number).HasColumnName("number").HasMaxLength(20);
                 builder.Property(x => x.Latitude).HasColumnName("latitude").HasPrecision(10, 8).IsRequired();
                 builder.Property(x => x.Longitude).HasColumnName("longitude").HasPrecision(11, 8).IsRequired();
-                builder.Property(x => x.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("CURRENT_TIMESTAMP").IsRequired();
-                builder.Property(x => x.UpdatedAt).HasColumnName("updated_at").HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP").ValueGeneratedOnAddOrUpdate().IsRequired();
+                builder.Property(x => x.CreatedAt).HasColumnName("created_at").IsRequired();
+                builder.Property(x => x.UpdatedAt).HasColumnName("updated_at").IsRequired();
 
                 builder.HasIndex(x => x.UserId).HasDatabaseName("idx_lands_user_id");
                 builder.HasIndex(x => x.CropId).HasDatabaseName("idx_lands_crop_id");
@@ -91,8 +91,8 @@ namespace Windfyr.Repository.Context
                 builder.Property(x => x.RegionFrosts).HasColumnName("region_frosts").HasDefaultValue(0).IsRequired();
                 builder.Property(x => x.RegionLightnings).HasColumnName("region_lightnings").HasDefaultValue(0).IsRequired();
                 builder.Property(x => x.RegionFireRiskPercent).HasColumnName("region_fire_risk_percent").HasPrecision(5, 2).IsRequired();
-                builder.Property(x => x.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("CURRENT_TIMESTAMP").IsRequired();
-                builder.Property(x => x.UpdatedAt).HasColumnName("updated_at").HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP").ValueGeneratedOnAddOrUpdate().IsRequired();
+                builder.Property(x => x.CreatedAt).HasColumnName("created_at").IsRequired();
+                builder.Property(x => x.UpdatedAt).HasColumnName("updated_at").IsRequired();
 
                 builder.HasIndex(x => x.LandId).HasDatabaseName("idx_forecast_histories_land_id");
                 builder.HasIndex(x => x.Date).HasDatabaseName("idx_forecast_histories_date");
@@ -113,8 +113,8 @@ namespace Windfyr.Repository.Context
                 builder.Property(x => x.LandId).HasColumnName("land_id").IsRequired();
                 builder.Property(x => x.Date).HasColumnName("date").IsRequired();
                 builder.Property(x => x.Status).HasColumnName("status").HasMaxLength(30).IsRequired();
-                builder.Property(x => x.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("CURRENT_TIMESTAMP").IsRequired();
-                builder.Property(x => x.UpdatedAt).HasColumnName("updated_at").HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP").ValueGeneratedOnAddOrUpdate().IsRequired();
+                builder.Property(x => x.CreatedAt).HasColumnName("created_at").IsRequired();
+                builder.Property(x => x.UpdatedAt).HasColumnName("updated_at").IsRequired();
 
                 builder.HasIndex(x => x.LandId).HasDatabaseName("idx_irrigation_histories_land_id");
                 builder.HasIndex(x => x.Date).HasDatabaseName("idx_irrigation_histories_date");
