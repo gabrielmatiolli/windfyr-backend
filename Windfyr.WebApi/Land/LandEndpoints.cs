@@ -176,7 +176,7 @@ public static class LandEndpoints
                 .ToList(),
             land.IrrigationHistories
                 .OrderByDescending(history => history.Date)
-                .Take(1)
+                .Take(3)
                 .Select(history => new LandIrrigationHistoryResponse(
                     history.Id,
                     history.Date,

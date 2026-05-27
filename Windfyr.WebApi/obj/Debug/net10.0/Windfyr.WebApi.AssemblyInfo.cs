@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Windfyr.WebApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bf28a6b9076fa0213b1f5130ed4e8b7e8edb4ee2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fe310cf6917e2422050b1b077a228c825b57cf80")]
 [assembly: System.Reflection.AssemblyProductAttribute("Windfyr.WebApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Windfyr.WebApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

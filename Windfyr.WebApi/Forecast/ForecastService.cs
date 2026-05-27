@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Windfyr.Http.OpenWeather;
 using Windfyr.Repository.Context;
+using Windfyr.WebApi.Irrigation;
 
 namespace Windfyr.WebApi.Forecast;
 
@@ -10,12 +11,16 @@ public interface IForecastService
     Task RefreshLandForecastHistoriesAsync(IEnumerable<Windfyr.Domain.Entities.Land> lands, CancellationToken ct);
 }
 
-public sealed class ForecastService(WindfyrDbContext dbContext, IOpenWeatherClient openWeatherClient) : IForecastService
+public sealed class ForecastService(
+    WindfyrDbContext dbContext,
+    IOpenWeatherClient openWeatherClient,
+    IIrrigationService irrigationService) : IForecastService
 {
     public async Task<CurrentForecastResponse> CaptureCurrentForecastAsync(ulong landId, ulong userId, CancellationToken ct)
     {
         var land = await dbContext.Lands
             .Include(l => l.ForecastHistories)
+            .Include(l => l.IrrigationHistories)
             .FirstOrDefaultAsync(l => l.Id == landId && l.UserId == userId, ct);
 
         if (land is null)
@@ -37,28 +42,41 @@ public sealed class ForecastService(WindfyrDbContext dbContext, IOpenWeatherClie
     private async Task<CurrentForecastResponse> CaptureCurrentForecastAsync(Windfyr.Domain.Entities.Land land, CancellationToken ct)
     {
         var weather = await openWeatherClient.GetCurrentWeatherAsync(land.Latitude, land.Longitude, ct);
+        var normalizedTemperature = decimal.Round(weather.TemperatureCelsius, 2);
+        var normalizedPressure = decimal.Round(weather.PressureHpa, 2);
+        var normalizedHumidity = decimal.Round(weather.HumidityPercent, 2);
         var fireRiskPercent = CalculateFireRiskPercent(
-            weather.TemperatureCelsius,
-            weather.HumidityPercent,
-            weather.PressureHpa);
+            normalizedTemperature,
+            normalizedHumidity,
+            normalizedPressure);
 
-        var history = new Windfyr.Domain.Entities.ForecastHistory
+        irrigationService.ApplyRiskStatusTransition(land, weather.DataTimeUtc.UtcDateTime, fireRiskPercent);
+
+        var latestHistory = land.ForecastHistories
+            .OrderByDescending(history => history.Date)
+            .FirstOrDefault();
+
+        if (HasForecastChanged(latestHistory, normalizedTemperature, normalizedPressure, normalizedHumidity, fireRiskPercent))
         {
-            LandId = land.Id,
-            Date = weather.DataTimeUtc.UtcDateTime,
-            AirTemperature = weather.TemperatureCelsius,
-            AirPressure = weather.PressureHpa,
-            AirHumidity = weather.HumidityPercent,
-            RegionFires = 0,
-            RegionFrosts = 0,
-            RegionLightnings = 0,
-            RegionFireRiskPercent = fireRiskPercent,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
+            var history = new Windfyr.Domain.Entities.ForecastHistory
+            {
+                LandId = land.Id,
+                Date = weather.DataTimeUtc.UtcDateTime,
+                AirTemperature = normalizedTemperature,
+                AirPressure = normalizedPressure,
+                AirHumidity = normalizedHumidity,
+                RegionFires = 0,
+                RegionFrosts = 0,
+                RegionLightnings = 0,
+                RegionFireRiskPercent = fireRiskPercent,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
 
-        dbContext.ForecastHistories.Add(history);
-        land.ForecastHistories.Add(history);
+            dbContext.ForecastHistories.Add(history);
+            land.ForecastHistories.Add(history);
+        }
+
         await dbContext.SaveChangesAsync(ct);
 
         return new CurrentForecastResponse(
@@ -67,14 +85,32 @@ public sealed class ForecastService(WindfyrDbContext dbContext, IOpenWeatherClie
             Latitude: land.Latitude,
             Longitude: land.Longitude,
             Forecast: new CurrentForecastDataResponse(
-                TemperatureCelsius: weather.TemperatureCelsius,
-                PressureHpa: weather.PressureHpa,
-                HumidityPercent: weather.HumidityPercent,
+                TemperatureCelsius: normalizedTemperature,
+                PressureHpa: normalizedPressure,
+                HumidityPercent: normalizedHumidity,
                 Description: weather.Description,
                 Icon: weather.Icon,
                 DataTimeUtc: weather.DataTimeUtc,
                 CityName: weather.CityName,
                 RegionFireRiskPercent: fireRiskPercent));
+    }
+
+    private static bool HasForecastChanged(
+        Windfyr.Domain.Entities.ForecastHistory? latest,
+        decimal airTemperature,
+        decimal airPressure,
+        decimal airHumidity,
+        decimal fireRiskPercent)
+    {
+        if (latest is null)
+        {
+            return true;
+        }
+
+        return latest.AirTemperature != airTemperature
+            || latest.AirPressure != airPressure
+            || latest.AirHumidity != airHumidity
+            || latest.RegionFireRiskPercent != fireRiskPercent;
     }
 
     private static decimal CalculateFireRiskPercent(
