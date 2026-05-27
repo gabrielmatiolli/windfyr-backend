@@ -1,5 +1,12 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Windfyr.Repository.Context;
+using Windfyr.WebApi.Auth;
+using Windfyr.WebApi.Crop;
+using Windfyr.WebApi.Land;
+using Windfyr.WebApi.User;
 
 var envFilePath = FindEnvFile();
 if (envFilePath is null)
@@ -26,8 +33,29 @@ if (string.IsNullOrWhiteSpace(connectionString))
         "Connection string nao configurada. Defina ConnectionStrings__DefaultConnection no arquivo .env.");
 }
 
+var authSettings = AuthSettings.FromConfiguration(builder.Configuration);
+authSettings.Validate();
+
 builder.Services.AddDbContext<WindfyrDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+builder.Services.AddSingleton(authSettings);
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSettings.Key)),
+            ValidateIssuer = true,
+            ValidIssuer = authSettings.Issuer,
+            ValidateAudience = true,
+            ValidAudience = authSettings.Audience,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+builder.Services.AddAuthorization();
 
 // Configuração do Swagger
 builder.Services.AddEndpointsApiExplorer(); // Permite que as Minimal APIs sejam descobertas
@@ -53,6 +81,14 @@ if (app.Environment.IsDevelopment())
         // c.RoutePrefix = string.Empty; 
     });
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapAuthEndpoints();
+app.MapUserEndpoints();
+app.MapCropEndpoints();
+app.MapLandEndpoints();
 
 app.Run();
 

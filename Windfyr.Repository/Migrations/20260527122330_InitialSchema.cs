@@ -192,6 +192,18 @@ namespace Windfyr.Repository.Migrations
                 table: "users",
                 column: "email",
                 unique: true);
+
+            migrationBuilder.InsertData(
+                table: "crops",
+                columns: new[] { "id", "type", "created_at", "updated_at" },
+                values: new object[,]
+                {
+                    { 1ul, "Milho", new DateTime(2026, 5, 27, 0, 0, 0, DateTimeKind.Utc), new DateTime(2026, 5, 27, 0, 0, 0, DateTimeKind.Utc) },
+                    { 2ul, "Soja", new DateTime(2026, 5, 27, 0, 0, 0, DateTimeKind.Utc), new DateTime(2026, 5, 27, 0, 0, 0, DateTimeKind.Utc) },
+                    { 3ul, "Cafe", new DateTime(2026, 5, 27, 0, 0, 0, DateTimeKind.Utc), new DateTime(2026, 5, 27, 0, 0, 0, DateTimeKind.Utc) },
+                    { 4ul, "Cana-de-acucar", new DateTime(2026, 5, 27, 0, 0, 0, DateTimeKind.Utc), new DateTime(2026, 5, 27, 0, 0, 0, DateTimeKind.Utc) },
+                    { 5ul, "Algodao", new DateTime(2026, 5, 27, 0, 0, 0, DateTimeKind.Utc), new DateTime(2026, 5, 27, 0, 0, 0, DateTimeKind.Utc) }
+                });
         }
 
         /// <inheritdoc />

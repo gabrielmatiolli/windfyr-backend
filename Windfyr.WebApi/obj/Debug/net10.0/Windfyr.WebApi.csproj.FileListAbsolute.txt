@@ -297,3 +297,12 @@ C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.WebApi\bin\De
 C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.WebApi\bin\Debug\net10.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.WebApi\bin\Debug\net10.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.WebApi\bin\Debug\net10.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.WebApi\bin\Debug\net10.0\BCrypt.Net-Next.dll
+C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.WebApi\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.WebApi\bin\Debug\net10.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.WebApi\bin\Debug\net10.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.WebApi\bin\Debug\net10.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.WebApi\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.WebApi\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.WebApi\bin\Debug\net10.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.WebApi\bin\Debug\net10.0\System.IdentityModel.Tokens.Jwt.dll
