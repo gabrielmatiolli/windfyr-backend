@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Windfyr.WebApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+15f0d5f5070e325548e48f537fd7e1324e5ef02a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+be35a6c7ab3bd29cbb59c41e6de0790cfe09cab3")]
 [assembly: System.Reflection.AssemblyProductAttribute("Windfyr.WebApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Windfyr.WebApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

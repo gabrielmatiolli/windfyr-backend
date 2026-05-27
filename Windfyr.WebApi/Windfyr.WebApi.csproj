@@ -24,4 +24,8 @@
     <ProjectReference Include="..\Windfyr.Http\Windfyr.Http.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>

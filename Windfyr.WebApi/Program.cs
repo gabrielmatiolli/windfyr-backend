@@ -2,14 +2,25 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Windfyr.Domain.Http.Interfaces;
+using Windfyr.Domain.Repositories.Interfaces;
+using Windfyr.Domain.UseCases.Auth.Implementations;
+using Windfyr.Domain.UseCases.Auth.Inputs;
+using Windfyr.Domain.UseCases.Auth.Interfaces;
+using Windfyr.Domain.UseCases.Crop.Implementations;
+using Windfyr.Domain.UseCases.Crop.Interfaces;
+using Windfyr.Domain.UseCases.Forecast.Implementations;
+using Windfyr.Domain.UseCases.Forecast.Interfaces;
+using Windfyr.Domain.UseCases.Irrigation.Implementations;
+using Windfyr.Domain.UseCases.Irrigation.Interfaces;
+using Windfyr.Domain.UseCases.Land.Implementations;
+using Windfyr.Domain.UseCases.Land.Interfaces;
+using Windfyr.Domain.UseCases.User.Implementations;
+using Windfyr.Domain.UseCases.User.Interfaces;
 using Windfyr.Http.OpenWeather;
 using Windfyr.Repository.Context;
+using Windfyr.Repository.Repositories;
 using Windfyr.WebApi.Auth;
-using Windfyr.WebApi.Crop;
-using Windfyr.WebApi.Forecast;
-using Windfyr.WebApi.Irrigation;
-using Windfyr.WebApi.Land;
-using Windfyr.WebApi.User;
 
 var envFilePath = FindEnvFile();
 if (envFilePath is null)
@@ -59,8 +70,6 @@ builder.Services.AddHttpClient<IOpenWeatherClient, OpenWeatherClient>((sp, clien
     var settings = sp.GetRequiredService<OpenWeatherSettings>();
     client.BaseAddress = new Uri(settings.BaseUrl);
 });
-builder.Services.AddScoped<IIrrigationService, IrrigationService>();
-builder.Services.AddScoped<IForecastService, ForecastService>();
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -78,6 +87,42 @@ builder.Services
         };
     });
 builder.Services.AddAuthorization();
+builder.Services.AddControllers();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICropRepository, CropRepository>();
+builder.Services.AddScoped<ILandRepository, LandRepository>();
+builder.Services.AddScoped<IForecastHistoryRepository, ForecastHistoryRepository>();
+builder.Services.AddScoped<IIrrigationHistoryRepository, IrrigationHistoryRepository>();
+
+builder.Services.AddScoped<IRegisterUserUseCase, RegisterUserUseCase>();
+builder.Services.AddScoped<ILoginUserUseCase>(sp =>
+{
+    var userRepository = sp.GetRequiredService<IUserRepository>();
+    var settings = sp.GetRequiredService<AuthSettings>();
+    var tokenSettings = new AuthTokenSettings
+    {
+        Key = settings.Key,
+        Issuer = settings.Issuer,
+        Audience = settings.Audience,
+        ExpiresInMinutes = settings.ExpiresInMinutes
+    };
+
+    return new LoginUserUseCase(userRepository, tokenSettings);
+});
+
+builder.Services.AddScoped<IGetCurrentUserUseCase, GetCurrentUserUseCase>();
+builder.Services.AddScoped<IUpdateCurrentUserUseCase, UpdateCurrentUserUseCase>();
+builder.Services.AddScoped<IListCropsUseCase, ListCropsUseCase>();
+builder.Services.AddScoped<IApplyIrrigationRiskUseCase, ApplyIrrigationRiskUseCase>();
+builder.Services.AddScoped<ICaptureCurrentForecastUseCase, CaptureCurrentForecastUseCase>();
+builder.Services.AddScoped<IRefreshLandForecastHistoriesUseCase, RefreshLandForecastHistoriesUseCase>();
+builder.Services.AddScoped<IListLandsUseCase, ListLandsUseCase>();
+builder.Services.AddScoped<IGetLandUseCase, GetLandUseCase>();
+builder.Services.AddScoped<ICreateLandUseCase, CreateLandUseCase>();
+builder.Services.AddScoped<IUpdateLandUseCase, UpdateLandUseCase>();
+builder.Services.AddScoped<IDeleteLandUseCase, DeleteLandUseCase>();
+builder.Services.AddScoped<IGetLandForecastUseCase, GetLandForecastUseCase>();
 
 // Configuração do Swagger
 builder.Services.AddEndpointsApiExplorer(); // Permite que as Minimal APIs sejam descobertas
@@ -107,10 +152,7 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapAuthEndpoints();
-app.MapUserEndpoints();
-app.MapCropEndpoints();
-app.MapLandEndpoints();
+app.MapControllers();
 
 app.Run();
 

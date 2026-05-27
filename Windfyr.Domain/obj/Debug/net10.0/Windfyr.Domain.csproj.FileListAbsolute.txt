@@ -21,3 +21,16 @@ C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.Domain\obj\De
 C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.Domain\obj\Debug\net10.0\refint\Windfyr.Domain.dll
 C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.Domain\obj\Debug\net10.0\Windfyr.Domain.pdb
 C:\Users\x570960\Desktop\projetos_pessoais\windfyr-backend\Windfyr.Domain\obj\Debug\net10.0\ref\Windfyr.Domain.dll
+C:\Users\gabri\source\repos\Windfyr\Windfyr.Domain\obj\Debug\net10.0\Windfyr.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gabri\source\repos\Windfyr\Windfyr.Domain\obj\Debug\net10.0\Windfyr.Domain.AssemblyInfoInputs.cache
+C:\Users\gabri\source\repos\Windfyr\Windfyr.Domain\obj\Debug\net10.0\Windfyr.Domain.AssemblyInfo.cs
+C:\Users\gabri\source\repos\Windfyr\Windfyr.Domain\obj\Debug\net10.0\Windfyr.Domain.csproj.CoreCompileInputs.cache
+C:\Users\gabri\source\repos\Windfyr\Windfyr.Domain\obj\Debug\net10.0\Windfyr.Domain.sourcelink.json
+C:\Users\gabri\source\repos\Windfyr\Windfyr.Domain\obj\Debug\net10.0\Windfyr.Domain.dll
+C:\Users\gabri\source\repos\Windfyr\Windfyr.Domain\obj\Debug\net10.0\refint\Windfyr.Domain.dll
+C:\Users\gabri\source\repos\Windfyr\Windfyr.Domain\obj\Debug\net10.0\Windfyr.Domain.pdb
+C:\Users\gabri\source\repos\Windfyr\Windfyr.Domain\obj\Debug\net10.0\Windfyr.Domain.csproj.AssemblyReference.cache
+C:\Users\gabri\source\repos\Windfyr\Windfyr.Domain\bin\Debug\net10.0\Windfyr.Domain.deps.json
+C:\Users\gabri\source\repos\Windfyr\Windfyr.Domain\bin\Debug\net10.0\Windfyr.Domain.dll
+C:\Users\gabri\source\repos\Windfyr\Windfyr.Domain\bin\Debug\net10.0\Windfyr.Domain.pdb
+C:\Users\gabri\source\repos\Windfyr\Windfyr.Domain\obj\Debug\net10.0\ref\Windfyr.Domain.dll

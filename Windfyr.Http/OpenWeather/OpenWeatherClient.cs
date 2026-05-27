@@ -1,12 +1,10 @@
 using System.Globalization;
 using System.Text.Json;
 
-namespace Windfyr.Http.OpenWeather;
+using Windfyr.Domain.Http.Interfaces;
+using Windfyr.Domain.Http.Models;
 
-public interface IOpenWeatherClient
-{
-    Task<OpenWeatherCurrentWeather> GetCurrentWeatherAsync(decimal latitude, decimal longitude, CancellationToken ct);
-}
+namespace Windfyr.Http.OpenWeather;
 
 public sealed class OpenWeatherClient(HttpClient httpClient, OpenWeatherSettings settings) : IOpenWeatherClient
 {
