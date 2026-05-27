@@ -15,6 +15,7 @@ Projeto organizado em camadas:
 
 - .NET SDK 10
 - MySQL
+- Conta na OpenWeather (para obter a API key)
 
 ## Configuracao
 
@@ -30,21 +31,29 @@ OPENWEATHER__APIKEY=sua-chave
 OPENWEATHER__BASEURL=https://api.openweathermap.org
 ```
 
+Para desenvolvimento local, use um banco MySQL vazio (o schema sera criado via migrations). Para testes de integracao, o projeto usa SQLite in-memory automaticamente.
+
 ## Como rodar
 
-1) Aplicar migrations
+1) Restaurar dependencias
+
+```
+dotnet restore
+```
+
+2) Aplicar migrations
 
 ```
 dotnet ef database update --project Windfyr.Repository --startup-project Windfyr.WebApi
 ```
 
-2) Iniciar a API
+3) Iniciar a API
 
 ```
 dotnet run --project Windfyr.WebApi
 ```
 
-3) Acessar o Swagger (Documentacao API)
+4) Acessar o Swagger (Documentacao API)
 
 Com a API em execucao, abra:
 
@@ -53,6 +62,26 @@ http://localhost:5081/swagger/index.html
 ```
 
 Obs.: a porta pode variar conforme o `launchSettings.json`.
+
+## Testes
+
+### Executar via CLI
+
+```
+dotnet test
+```
+
+Para executar apenas os testes de integracao:
+
+```
+dotnet test Windfyr.WebApi.Tests\Windfyr.WebApi.Tests.csproj -v minimal
+```
+
+Os testes de integracao usam SQLite in-memory e autenticacao fake via `TestAuthHandler`.
+
+### Executar via Visual Studio
+
+Abra **Teste** > **Explorador de Testes** e clique em **Executar todos**.
 
 ## Endpoints
 
@@ -78,6 +107,15 @@ Obs.: a porta pode variar conforme o `launchSettings.json`.
 - `PUT /api/lands/{id}`
 - `DELETE /api/lands/{id}`
 - `GET /api/lands/{id}/forecast`
+
+## Postman
+
+Colecao atualizada em `C:\Users\gabri\Downloads\windfyr.postman_collection.json`:
+
+- Variaveis: `{{baseUrl}}`, `{{token}}`, `{{landId}}`
+- Script no login para setar `token`
+- Script no criar land para setar `landId`
+- Auth bearer no nivel da collection
 
 ## Comportamento do endpoint /api/lands
 
@@ -106,3 +144,8 @@ o ESP32 consulta o endpoint e identifica o registro em irrigation_histories mais
 - Senha com minimo de 6 caracteres.
 - Senha armazenada com hash usando BCrypt.
 - Confirmacao de senha na criacao e atualizacao.
+
+## Observacoes
+
+- Em ambiente `Testing`, o `Program.cs` aplica valores default para JWT/OpenWeather e nao carrega `.env`.
+- A rota padronizada de usuario atual e `/api/users/me`.
