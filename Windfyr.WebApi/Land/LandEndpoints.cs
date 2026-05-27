@@ -1,8 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
-using Windfyr.Http.OpenWeather;
 using Windfyr.Repository.Context;
+using Windfyr.WebApi.Forecast;
 
 namespace Windfyr.WebApi.Land;
 
@@ -44,6 +44,7 @@ public static class LandEndpoints
     private static async Task<IResult> GetLandsAsync(
         ClaimsPrincipal principal,
         WindfyrDbContext dbContext,
+        IForecastService forecastService,
         CancellationToken ct)
     {
         if (!TryGetUserId(principal, out var userId))
@@ -53,20 +54,16 @@ public static class LandEndpoints
 
         var lands = await dbContext.Lands
             .AsNoTracking()
+            .Include(l => l.Crop)
+            .Include(l => l.ForecastHistories)
+            .Include(l => l.IrrigationHistories)
             .Where(l => l.UserId == userId)
             .OrderBy(l => l.Name)
-            .Select(l => new LandResponse(
-                l.Id,
-                l.Name,
-                l.Hectares,
-                l.City,
-                l.State,
-                new LandCropResponse(l.Crop.Id, l.Crop.Type),
-                l.Latitude,
-                l.Longitude))
             .ToListAsync(ct);
 
-        return Results.Ok(lands);
+        await forecastService.RefreshLandForecastHistoriesAsync(lands, ct);
+
+        return Results.Ok(lands.Select(MapLandResponse));
     }
 
     private static async Task<IResult> GetLandByIdAsync(
@@ -82,19 +79,12 @@ public static class LandEndpoints
 
         var land = await dbContext.Lands
             .AsNoTracking()
-            .Where(l => l.Id == id && l.UserId == userId)
-            .Select(l => new LandResponse(
-                l.Id,
-                l.Name,
-                l.Hectares,
-                l.City,
-                l.State,
-                new LandCropResponse(l.Crop.Id, l.Crop.Type),
-                l.Latitude,
-                l.Longitude))
-            .FirstOrDefaultAsync(ct);
+            .Include(l => l.Crop)
+            .Include(l => l.ForecastHistories)
+            .Include(l => l.IrrigationHistories)
+            .FirstOrDefaultAsync(l => l.Id == id && l.UserId == userId, ct);
 
-        return land is null ? Results.NotFound() : Results.Ok(land);
+        return land is null ? Results.NotFound() : Results.Ok(MapLandResponse(land));
     }
 
     private static async Task<IResult> CreateLandAsync(
@@ -151,26 +141,53 @@ public static class LandEndpoints
 
         var created = await dbContext.Lands
             .AsNoTracking()
-            .Where(l => l.Id == land.Id)
-            .Select(l => new LandResponse(
-                l.Id,
-                l.Name,
-                l.Hectares,
-                l.City,
-                l.State,
-                new LandCropResponse(l.Crop.Id, l.Crop.Type),
-                l.Latitude,
-                l.Longitude))
-            .FirstAsync(ct);
+            .Include(l => l.Crop)
+            .Include(l => l.ForecastHistories)
+            .Include(l => l.IrrigationHistories)
+            .FirstAsync(l => l.Id == land.Id, ct);
 
-        return Results.Created($"/api/lands/{land.Id}", created);
+        return Results.Created($"/api/lands/{land.Id}", MapLandResponse(created));
+    }
+
+    private static LandResponse MapLandResponse(Windfyr.Domain.Entities.Land land)
+    {
+        return new LandResponse(
+            land.Id,
+            land.Name,
+            land.Hectares,
+            land.City,
+            land.State,
+            new LandCropResponse(land.Crop.Id, land.Crop.Type),
+            land.Latitude,
+            land.Longitude,
+            land.ForecastHistories
+                .OrderByDescending(history => history.Date)
+                .Take(1)
+                .Select(history => new LandForecastHistoryResponse(
+                    history.Id,
+                    history.Date,
+                    history.AirTemperature,
+                    history.AirPressure,
+                    history.AirHumidity,
+                    history.RegionFires,
+                    history.RegionFrosts,
+                    history.RegionLightnings,
+                    history.RegionFireRiskPercent))
+                .ToList(),
+            land.IrrigationHistories
+                .OrderByDescending(history => history.Date)
+                .Take(1)
+                .Select(history => new LandIrrigationHistoryResponse(
+                    history.Id,
+                    history.Date,
+                    history.Status))
+                .ToList());
     }
 
     private static async Task<IResult> GetLandForecastAsync(
         ulong id,
         ClaimsPrincipal principal,
-        WindfyrDbContext dbContext,
-        IOpenWeatherClient openWeatherClient,
+        IForecastService forecastService,
         CancellationToken ct)
     {
         if (!TryGetUserId(principal, out var userId))
@@ -178,42 +195,14 @@ public static class LandEndpoints
             return Results.Unauthorized();
         }
 
-        var land = await dbContext.Lands
-            .AsNoTracking()
-            .Where(l => l.Id == id && l.UserId == userId)
-            .Select(l => new
-            {
-                l.Id,
-                l.Name,
-                l.Latitude,
-                l.Longitude
-            })
-            .FirstOrDefaultAsync(ct);
-
-        if (land is null)
-        {
-            return Results.NotFound();
-        }
-
         try
         {
-            var weather = await openWeatherClient.GetCurrentWeatherAsync(land.Latitude, land.Longitude, ct);
-
-            var response = new LandForecastResponse(
-                LandId: land.Id,
-                LandName: land.Name,
-                Latitude: land.Latitude,
-                Longitude: land.Longitude,
-                Forecast: new LandForecastDataResponse(
-                    TemperatureCelsius: weather.TemperatureCelsius,
-                    PressureHpa: weather.PressureHpa,
-                    HumidityPercent: weather.HumidityPercent,
-                    Description: weather.Description,
-                    Icon: weather.Icon,
-                    DataTimeUtc: weather.DataTimeUtc,
-                    CityName: weather.CityName));
-
+            var response = await forecastService.CaptureCurrentForecastAsync(id, userId, ct);
             return Results.Ok(response);
+        }
+        catch (KeyNotFoundException)
+        {
+            return Results.NotFound();
         }
         catch (Exception ex)
         {
@@ -275,19 +264,12 @@ public static class LandEndpoints
 
         var updated = await dbContext.Lands
             .AsNoTracking()
-            .Where(l => l.Id == land.Id)
-            .Select(l => new LandResponse(
-                l.Id,
-                l.Name,
-                l.Hectares,
-                l.City,
-                l.State,
-                new LandCropResponse(l.Crop.Id, l.Crop.Type),
-                l.Latitude,
-                l.Longitude))
-            .FirstAsync(ct);
+            .Include(l => l.Crop)
+            .Include(l => l.ForecastHistories)
+            .Include(l => l.IrrigationHistories)
+            .FirstAsync(l => l.Id == land.Id, ct);
 
-        return Results.Ok(updated);
+        return Results.Ok(MapLandResponse(updated));
     }
 
     private static async Task<IResult> DeleteLandAsync(

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Windfyr.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+92932ae7de35a89b8b0be2a102b411a4f218cffd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bf28a6b9076fa0213b1f5130ed4e8b7e8edb4ee2")]
 [assembly: System.Reflection.AssemblyProductAttribute("Windfyr.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Windfyr.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -12,7 +12,25 @@ public sealed record LandResponse(
     string State,
     LandCropResponse Crop,
     decimal Latitude,
-    decimal Longitude);
+    decimal Longitude,
+    IReadOnlyList<LandForecastHistoryResponse> ForecastHistories,
+    IReadOnlyList<LandIrrigationHistoryResponse> IrrigationHistories);
+
+public sealed record LandForecastHistoryResponse(
+    ulong Id,
+    DateTime Date,
+    decimal AirTemperature,
+    decimal AirPressure,
+    decimal AirHumidity,
+    int RegionFires,
+    int RegionFrosts,
+    int RegionLightnings,
+    decimal RegionFireRiskPercent);
+
+public sealed record LandIrrigationHistoryResponse(
+    ulong Id,
+    DateTime Date,
+    string Status);
 
 public sealed record CreateLandRequest(
     [property: JsonPropertyName("crop_id")] ulong CropId,
@@ -29,19 +47,3 @@ public sealed record CreateLandRequest(
 public sealed record UpdateLandRequest(
     string? Name,
     decimal? Hectares);
-
-public sealed record LandForecastDataResponse(
-    decimal TemperatureCelsius,
-    decimal PressureHpa,
-    decimal HumidityPercent,
-    string Description,
-    string Icon,
-    DateTimeOffset DataTimeUtc,
-    string CityName);
-
-public sealed record LandForecastResponse(
-    ulong LandId,
-    string LandName,
-    decimal Latitude,
-    decimal Longitude,
-    LandForecastDataResponse Forecast);

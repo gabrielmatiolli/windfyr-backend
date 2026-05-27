@@ -6,6 +6,7 @@ using Windfyr.Http.OpenWeather;
 using Windfyr.Repository.Context;
 using Windfyr.WebApi.Auth;
 using Windfyr.WebApi.Crop;
+using Windfyr.WebApi.Forecast;
 using Windfyr.WebApi.Land;
 using Windfyr.WebApi.User;
 
@@ -57,6 +58,7 @@ builder.Services.AddHttpClient<IOpenWeatherClient, OpenWeatherClient>((sp, clien
     var settings = sp.GetRequiredService<OpenWeatherSettings>();
     client.BaseAddress = new Uri(settings.BaseUrl);
 });
+builder.Services.AddScoped<IForecastService, ForecastService>();
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
