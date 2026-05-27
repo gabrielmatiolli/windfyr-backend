@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Windfyr.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dc28c2e2f515ed20273452166231e54e165e083e")]
 [assembly: System.Reflection.AssemblyProductAttribute("Windfyr.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Windfyr.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
