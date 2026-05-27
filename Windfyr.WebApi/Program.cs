@@ -1,7 +1,14 @@
 using Microsoft.EntityFrameworkCore;
-using Windfyr.Domain.Repositories;
 using Windfyr.Repository.Context;
-using Windfyr.Repository.Repositories;
+
+var envFilePath = FindEnvFile();
+if (envFilePath is null)
+{
+    throw new InvalidOperationException(
+        "Arquivo .env nao encontrado. Crie um .env no projeto (ou em um diretorio pai) com a chave ConnectionStrings__DefaultConnection.");
+}
+
+LoadDotEnv(envFilePath);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,13 +16,18 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. Configuração de Serviços (DI Container)
 // ==========================================
 
-// Configura o EF Core para usar SQL Server
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<WindfyrDbContext>(options =>
-    options.UseSqlServer(connectionString));
+// Configura o EF Core para usar MySQL
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
 
-// Injeção de Dependência
-builder.Services.AddScoped<IFireAlertRepository, FireAlertRepository>();
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "Connection string nao configurada. Defina ConnectionStrings__DefaultConnection no arquivo .env.");
+}
+
+builder.Services.AddDbContext<WindfyrDbContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 // Configuração do Swagger
 builder.Services.AddEndpointsApiExplorer(); // Permite que as Minimal APIs sejam descobertas
@@ -42,17 +54,69 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// ==========================================
-// 3. Mapeamento dos Endpoints (Rotas)
-// ==========================================
-
-app.MapGet("/api/fires", async (IFireAlertRepository repository, CancellationToken ct) =>
-{
-    var alerts = await repository.GetActiveAlertsAsync(ct);
-    return Results.Ok(alerts);
-})
-.WithName("GetActiveFires")
-.WithSummary("Obtém os focos de incêndio ativos")
-.WithDescription("Retorna uma lista de focos de incêndio detectados nas últimas horas, classificados por risco.");
-
 app.Run();
+
+static string? FindEnvFile()
+{
+    var searchRoots = new[]
+    {
+        Directory.GetCurrentDirectory(),
+        AppContext.BaseDirectory
+    };
+
+    foreach (var root in searchRoots)
+    {
+        var current = new DirectoryInfo(root);
+        while (current is not null)
+        {
+            var candidate = Path.Combine(current.FullName, ".env");
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+
+            current = current.Parent;
+        }
+    }
+
+    return null;
+}
+
+static void LoadDotEnv(string filePath)
+{
+    foreach (var rawLine in File.ReadLines(filePath))
+    {
+        var line = rawLine.Trim();
+
+        if (string.IsNullOrWhiteSpace(line) || line.StartsWith('#'))
+        {
+            continue;
+        }
+
+        if (line.StartsWith("export ", StringComparison.OrdinalIgnoreCase))
+        {
+            line = line[7..].Trim();
+        }
+
+        var separatorIndex = line.IndexOf('=');
+        if (separatorIndex <= 0)
+        {
+            continue;
+        }
+
+        var key = line[..separatorIndex].Trim();
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            continue;
+        }
+
+        var value = line[(separatorIndex + 1)..].Trim();
+        if ((value.StartsWith('"') && value.EndsWith('"'))
+            || (value.StartsWith('\'') && value.EndsWith('\'')))
+        {
+            value = value[1..^1];
+        }
+
+        Environment.SetEnvironmentVariable(key, value);
+    }
+}
