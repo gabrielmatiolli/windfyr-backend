@@ -44,6 +44,16 @@ dotnet ef database update --project Windfyr.Repository --startup-project Windfyr
 dotnet run --project Windfyr.WebApi
 ```
 
+3) Acessar o Swagger (Documentacao API)
+
+Com a API em execucao, abra:
+
+```
+http://localhost:5081/swagger/index.html
+```
+
+Obs.: a porta pode variar conforme o `launchSettings.json`.
+
 ## Endpoints
 
 ### Auth
@@ -85,6 +95,11 @@ define o estado do irrigador com base no risco calculado.
 - risco > 80%: ativado
 - risco <= 80%: desativado
 Se o estado mudou em relacao ao ultimo historico, cria um novo item em `irrigation_histories`.
+
+4) Simulacao da automacao do irrigador:
+a automacao do irrigador também pode ser simulada no Wokwi: https://wokwi.com/projects/465189225880013825
+![Simulacao da automacao do irrigador no Wokwi](imagem.png)
+o ESP32 consulta o endpoint e identifica o registro em irrigation_histories mais recente e, conforme o status retornado, ativa ou desativa o irrigador simulado, representado por um LED e por mensagens exibidas em tempo real no display.
 
 ## Seguranca
 
