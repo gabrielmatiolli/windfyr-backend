@@ -44,7 +44,7 @@ dotnet ef database update --project Windfyr.Repository --startup-project Windfyr
 dotnet run --project Windfyr.WebApi
 ```
 
-3) Acessar o Swagger (Documentação API)
+3) Acessar o Swagger (Documentacao API)
 
 Com a API em execucao, abra:
 
