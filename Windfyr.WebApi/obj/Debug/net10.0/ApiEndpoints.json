@@ -1,0 +1,21 @@
+[
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_3",
+    "RelativePath": "api/fires",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "GetActiveFires",
+    "Description": "Retorna uma lista de focos de inc\u00EAndio detectados nas \u00FAltimas horas, classificados por risco.",
+    "Summary": "Obt\u00E9m os focos de inc\u00EAndio ativos"
+  }
+]

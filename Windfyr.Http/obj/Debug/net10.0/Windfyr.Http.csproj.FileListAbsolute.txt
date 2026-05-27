@@ -1,0 +1,15 @@
+C:\Users\gabri\source\repos\Windfyr.Http\bin\Debug\net10.0\Windfyr.Http.deps.json
+C:\Users\gabri\source\repos\Windfyr.Http\bin\Debug\net10.0\Windfyr.Http.dll
+C:\Users\gabri\source\repos\Windfyr.Http\bin\Debug\net10.0\Windfyr.Http.pdb
+C:\Users\gabri\source\repos\Windfyr.Http\bin\Debug\net10.0\Windfyr.Domain.dll
+C:\Users\gabri\source\repos\Windfyr.Http\bin\Debug\net10.0\Windfyr.Domain.pdb
+C:\Users\gabri\source\repos\Windfyr.Http\obj\Debug\net10.0\Windfyr.Http.csproj.AssemblyReference.cache
+C:\Users\gabri\source\repos\Windfyr.Http\obj\Debug\net10.0\Windfyr.Http.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gabri\source\repos\Windfyr.Http\obj\Debug\net10.0\Windfyr.Http.AssemblyInfoInputs.cache
+C:\Users\gabri\source\repos\Windfyr.Http\obj\Debug\net10.0\Windfyr.Http.AssemblyInfo.cs
+C:\Users\gabri\source\repos\Windfyr.Http\obj\Debug\net10.0\Windfyr.Http.csproj.CoreCompileInputs.cache
+C:\Users\gabri\source\repos\Windfyr.Http\obj\Debug\net10.0\Windfyr..5ADAB1E9.Up2Date
+C:\Users\gabri\source\repos\Windfyr.Http\obj\Debug\net10.0\Windfyr.Http.dll
+C:\Users\gabri\source\repos\Windfyr.Http\obj\Debug\net10.0\refint\Windfyr.Http.dll
+C:\Users\gabri\source\repos\Windfyr.Http\obj\Debug\net10.0\Windfyr.Http.pdb
+C:\Users\gabri\source\repos\Windfyr.Http\obj\Debug\net10.0\ref\Windfyr.Http.dll

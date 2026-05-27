@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Windfyr.Domain": {
+      "commandName": "Project"
+    },
+    "Windfyr.WebApi": {
+      "commandName": "Project"
+    }
+  }
+}

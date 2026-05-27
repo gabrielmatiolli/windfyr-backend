@@ -1,0 +1,31 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Windfyr API",
+    "description": "API de monitoramento de focos de incêndio.",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/fires": {
+      "get": {
+        "tags": [
+          "Windfyr.WebApi"
+        ],
+        "summary": "Obtém os focos de incêndio ativos",
+        "description": "Retorna uma lista de focos de incêndio detectados nas últimas horas, classificados por risco.",
+        "operationId": "GetActiveFires",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": { },
+  "tags": [
+    {
+      "name": "Windfyr.WebApi"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+C:\Users\gabri\source\repos\Windfyr.Domain\bin\Debug\net10.0\Windfyr.Domain.deps.json
+C:\Users\gabri\source\repos\Windfyr.Domain\bin\Debug\net10.0\Windfyr.Domain.dll
+C:\Users\gabri\source\repos\Windfyr.Domain\bin\Debug\net10.0\Windfyr.Domain.pdb
+C:\Users\gabri\source\repos\Windfyr.Domain\obj\Debug\net10.0\Windfyr.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gabri\source\repos\Windfyr.Domain\obj\Debug\net10.0\Windfyr.Domain.AssemblyInfoInputs.cache
+C:\Users\gabri\source\repos\Windfyr.Domain\obj\Debug\net10.0\Windfyr.Domain.AssemblyInfo.cs
+C:\Users\gabri\source\repos\Windfyr.Domain\obj\Debug\net10.0\Windfyr.Domain.csproj.CoreCompileInputs.cache
+C:\Users\gabri\source\repos\Windfyr.Domain\obj\Debug\net10.0\Windfyr.Domain.dll
+C:\Users\gabri\source\repos\Windfyr.Domain\obj\Debug\net10.0\refint\Windfyr.Domain.dll
+C:\Users\gabri\source\repos\Windfyr.Domain\obj\Debug\net10.0\Windfyr.Domain.pdb
+C:\Users\gabri\source\repos\Windfyr.Domain\obj\Debug\net10.0\ref\Windfyr.Domain.dll
